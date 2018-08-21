@@ -16,11 +16,11 @@ def application(environ, start_response):
     return start_response(status, headers)
 
 
-def start_response(status, headers):
+def start_response(status, headers, content=""):
     response = f"{status}"
     for key, val in headers:
         response += "\n" + f"{key}: {val}"
-        response += "\n\n" + "Hello world!"
+        response += "\n\n" + content
     return response.encode("utf8")
 
 
