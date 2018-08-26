@@ -17,8 +17,8 @@ def handle_request(server_socket, urls):
 def route(request, urls):
     #TODO: view not callable
     view = match_view(request, urls)
-    #return view(request)
-    return
+    print(view)
+    return view(request)
 
 
 def match_view(request, urls):
@@ -34,13 +34,22 @@ def parse_url(request):
 
 
 def hello(request):
-    #TODO: call render
-    print("hello, user!")
+    template_path = "templates/hello.html"
+    context = {"title": "Hello Page",
+               "name": "World"}
+    if request['method'] == "POST":
+        context.update(request.get_args())
+        return render(request, template_path, context)
+    return render(request, template_path, context)
 
 
 def render(request, template_path, template_args):
-    #TODO: complete render
-    pass
+    directory = os.path.join(BASE_DIR, os.path.join(PROJECT_NAME, template_path))
+    with open(f"{directory}", 'r') as template:
+        content = template.read()
+        for parameter, arg in template_args.items():
+            content = content.replace("{ %s }" % parameter, arg)
+        return content.encode("utf8")
 
 
 def application(environ, start_response):
